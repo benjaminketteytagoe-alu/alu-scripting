@@ -34,20 +34,25 @@ def top_ten(subreddit):
             url,
             headers=headers,
             params=params,
-            allow_redirects=False
+            allow_redirects=False,
+            timeout=10
         )
         
         # Check if the request was successful and not redirected
         if response.status_code == 200:
             data = response.json()
-            posts = data.get('data', {}).get('children', [])
             
-            if not posts:
+            # Check if it's valid Reddit data structure
+            if 'data' not in data or 'children' not in data.get('data', {}):
                 print(None)
                 return
+                
+            posts = data.get('data', {}).get('children', [])
             
+            # Print each post title
             for post in posts:
-                title = post.get('data', {}).get('title')
+                post_data = post.get('data', {})
+                title = post_data.get('title')
                 if title:
                     print(title)
         else:
@@ -55,4 +60,4 @@ def top_ten(subreddit):
             print(None)
             
     except Exception:
-        print(None)
+        print(None))
