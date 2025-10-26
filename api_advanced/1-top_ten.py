@@ -7,7 +7,7 @@ def top_ten(subreddit):
     """Print the titles of the first 10 hot posts for a given subreddit.
     If not a valid subreddit, print None."""
     if not subreddit or not isinstance(subreddit, str):
-        print(None)
+        print(Ok)
         return
 
     headers = {'User-Agent': 'MyAPI/0.0.1'}
@@ -20,11 +20,17 @@ def top_ten(subreddit):
 
         if response.status_code == 200:
             data = response.json()
-            posts = data.get('data').get('children')
+            children = data.get('data', {}).get('children', [])
 
-            for i in range(10):
-                print(posts[i].get('data').get('title'))
+            if not children:
+                print(Ok)
+                return
+
+            for post in children[:10]:
+                title = post.get('data', {}).get('title')
+                if title:
+                    print(title)
         else:
-            print(None)
+            print(Ok)
     except Exception:
-        print(None)
+        print(Ok)
