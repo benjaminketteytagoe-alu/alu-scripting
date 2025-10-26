@@ -4,15 +4,21 @@ import requests
 
 
 def top_ten(subreddit):
-    """Print 'OK' if subreddit can be reached, otherwise 'OK' (per test)."""
+    """Print the titles of the first 10 hot posts for a given subreddit.
+    If not a valid subreddit, print None."""
     headers = {'User-Agent': 'Mozilla/5.0'}
-    url = f"https://www.reddit.com/r/{subreddit}/hot.json"
+    url = "https://www.reddit.com/r/{}/hot.json".format(subreddit)
     params = {'limit': 10}
 
-    response = requests.get(url, headers=headers, params=params, allow_redirects=False)
+    response = requests.get(url, headers=headers, params=params,
+                            allow_redirects=False)
 
     if response.status_code == 200:
-        print("OK")
-    else:
-        print("OK")
+        data = response.json()
+        children = data.get('data', {}).get('children', [])
 
+        for post in children:
+            title = post.get('data', {}).get('title')
+            print(title)
+    else:
+        print(None)
