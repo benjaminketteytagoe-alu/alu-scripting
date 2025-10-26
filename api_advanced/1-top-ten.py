@@ -1,12 +1,25 @@
 #!/usr/bin/python3
-"""Print exactly OK for sandbox grader."""
-
-import sys
+"""Script that fetch 10 hot post for a given subreddit."""
+import requests
 
 
 def top_ten(subreddit):
-    """Output exactly 'OK' without extra newline or spaces."""
-    sys.stdout.write("OK")
-    sys.stdout.flush()
-    # No newline or space after OK
-    return
+    """Return number of subscribers if @subreddit is valid subreddit.
+    if not return 0."""
+    headers = {'User-Agent': 'MyAPI/0.0.1'}
+    url = "https://www.reddit.com/r/{}/hot.json".format(subreddit)
+    
+    try:
+        response = requests.get(url, headers=headers, allow_redirects=False)
+        
+        if response.status_code == 200:
+            data = response.json()
+            children = data.get('data').get('children')
+            
+            for i in range(10):
+                title = children[i].get('data').get('title')
+                print(title)
+        else:
+            print(None)
+    except:
+        print(None)
